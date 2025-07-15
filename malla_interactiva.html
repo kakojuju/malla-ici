@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Malla Ingeniería Civil Industrial</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+  }
+  .malla {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+  .semestre {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 150px;
+    word-wrap: break-word;
+  }
+  .semestre-title {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .ramo {
+    padding: 5px;
+    cursor: pointer;
+    color: black;
+    border-radius: 4px;
+    text-align: center;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+  .bloqueado {
+    background-color: gray;
+    color: white;
+  }
+  .desbloqueado {
+    background-color: #a8dadc;
+  }
+  .aprobado {
+    text-decoration: line-through;
+    background-color: #a8dadc;
+  }
+</style>
+</head>
+<body>
+<h1>Malla Ingeniería Civil Industrial</h1>
+<div class="malla" id="malla"></div>
+
+<script>
+const ramos = {
+  "Álgebra y trigonometría": [],
+  "Cálculo diferencial": [],
+  "Química general": [],
+  "Introducción a la ingeniería industrial": [],
+  "Formación integral institucional 1": [],
+  "Formación integral institucional 2": [],
+  "Álgebra lineal": ["Álgebra y trigonometría"],
+  "Cálculo integral": ["Cálculo diferencial"],
+  "Física mecánica": ["Álgebra y trigonometría", "Cálculo diferencial"],
+  "Software para ingeniería industrial": [],
+  "Formación integral institucional 3": [],
+  "Taller de emprendimiento": [],
+  "Cálculo multivariable": ["Cálculo integral"],
+  "Estadística": ["Cálculo integral"],
+  "Electromagnetismo": ["Física mecánica"],
+  "Algoritmo y programación para ingeniería industrial": [],
+  "Formación integral extra programática": [],
+  "Inglés básico": [],
+  "Ecuaciones diferenciales": ["Cálculo multivariable"],
+  "Teoría de sistemas": [],
+  "Contabilidad y costos": [],
+  "Electrotecnia": ["Electromagnetismo"],
+  "Termodinámica": ["Física mecánica"],
+  "Inglés intermedio": [],
+  "Taller de ciencias básicas": [],
+  "Métodos de producción": ["Contabilidad y costos"],
+  "Gestión estratégica": ["Teoría de sistemas"],
+  "Microeconomía": [],
+  "Mecánica de sólidos y fluidos": ["Física mecánica"],
+  "Inferencia estadística": ["Estadística"],
+  "Inglés avanzado": [],
+  "Modelamiento de sistemas informáticos": ["Algoritmo y programación para ingeniería industrial"],
+  "Comportamiento organizacional": [],
+  "Optimización lineal": ["Álgebra lineal"],
+  "Finanzas": ["Contabilidad y costos"],
+  "Electivo profesional I": [],
+  "Formación integral institucional 4": [],
+  "Taller de ciencias de la ingeniería": [],
+  "Gestión de operaciones": ["Métodos de producción"],
+  "Gestión de servicios": [],
+  "Optimización no lineal": ["Optimización lineal"],
+  "Evaluación de proyectos": ["Finanzas"],
+  "Electivo profesional II": [],
+  "Gestión de calidad": [],
+  "Práctica profesional I": [],
+  "Econometría": ["Inferencia estadística"],
+  "Gestión de la innovación": [],
+  "Marketing": [],
+  "Electivo profesional III": [],
+  "Formación integral institucional 5": [],
+  "Taller de sistemas productivos": [],
+  "Legislación laboral y ambiental": [],
+  "Logística integral": ["Gestión de operaciones"],
+  "Simulación de procesos": ["Optimización no lineal"],
+  "Formulación y preparación de proyectos": ["Evaluación de proyectos"],
+  "Electivo profesional IV": [],
+  "Taller de proyecto de emprendimiento": [],
+  "Práctica profesional II": [],
+  "Inclusión al ambiente laboral desde la ingeniería industrial": [],
+  "Seminario de titulación": [],
+  "Electivo profesional V": [],
+  "Formación integral institucional 6": []
+};
+
+const semestres = [
+  ["Álgebra y trigonometría", "Cálculo diferencial", "Química general", "Introducción a la ingeniería industrial", "Formación integral institucional 1", "Formación integral institucional 2"],
+  ["Álgebra lineal", "Cálculo integral", "Física mecánica", "Software para ingeniería industrial", "Formación integral institucional 3", "Taller de emprendimiento"],
+  ["Cálculo multivariable", "Estadística", "Electromagnetismo", "Algoritmo y programación para ingeniería industrial", "Formación integral extra programática", "Inglés básico"],
+  ["Ecuaciones diferenciales", "Teoría de sistemas", "Contabilidad y costos", "Electrotecnia", "Termodinámica", "Inglés intermedio", "Taller de ciencias básicas"],
+  ["Métodos de producción", "Gestión estratégica", "Microeconomía", "Mecánica de sólidos y fluidos", "Inferencia estadística", "Inglés avanzado"],
+  ["Modelamiento de sistemas informáticos", "Comportamiento organizacional", "Optimización lineal", "Finanzas", "Electivo profesional I", "Formación integral institucional 4", "Taller de ciencias de la ingeniería"],
+  ["Gestión de operaciones", "Gestión de servicios", "Optimización no lineal", "Evaluación de proyectos", "Electivo profesional II", "Gestión de calidad", "Práctica profesional I"],
+  ["Econometría", "Gestión de la innovación", "Marketing", "Electivo profesional III", "Formación integral institucional 5", "Taller de sistemas productivos"],
+  ["Legislación laboral y ambiental", "Logística integral", "Simulación de procesos", "Formulación y preparación de proyectos", "Electivo profesional IV", "Taller de proyecto de emprendimiento", "Práctica profesional II"],
+  ["Inclusión al ambiente laboral desde la ingeniería industrial", "Seminario de titulación", "Electivo profesional V", "Formación integral institucional 6"]
+];
+
+const estado = {};
+Object.keys(ramos).forEach(r => estado[r] = ramos[r].length === 0 ? "desbloqueado" : "bloqueado");
+
+const malla = document.getElementById("malla");
+semestres.forEach((ramosSem, i) => {
+  const col = document.createElement("div");
+  col.className = "semestre";
+  const title = document.createElement("div");
+  title.className = "semestre-title";
+  title.textContent = `${i + 1}° semestre`;
+  col.appendChild(title);
+
+  ramosSem.forEach(r => {
+    const div = document.createElement("div");
+    div.className = `ramo ${estado[r]}`;
+    div.textContent = r;
+    div.onclick = () => toggleRamo(r, div);
+    col.appendChild(div);
+  });
+  malla.appendChild(col);
+});
+
+function toggleRamo(ramo, div) {
+  if (estado[ramo] !== "desbloqueado") return;
+
+  estado[ramo] = "aprobado";
+  div.classList.add("aprobado");
+  div.classList.remove("desbloqueado");
+
+  Object.keys(ramos).forEach(r => {
+    if (estado[r] === "bloqueado") {
+      const pre = ramos[r];
+      if (pre.every(p => estado[p] === "aprobado")) {
+        estado[r] = "desbloqueado";
+        const nodo = [...document.querySelectorAll(".ramo")].find(el => el.textContent === r);
+        nodo.classList.remove("bloqueado");
+        nodo.classList.add("desbloqueado");
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>
