@@ -19,9 +19,9 @@
     .fila-inferior {
       display: flex;
       gap: 12px;
-      justify-content: flex-start;
-      overflow-x: auto;
-      margin-bottom: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
     }
 
     .semestre {
@@ -66,10 +66,6 @@
     .aprobado {
       background-color: #e6f9f0;
       text-decoration: line-through;
-    }
-
-    .formacion {
-      background-color: #deeaff !important;
     }
   </style>
 </head>
@@ -174,9 +170,6 @@
       ramosSem.forEach(r => {
         const div = document.createElement("div");
         div.className = `ramo ${estado[r]}`;
-        if (r.includes("Formación integral")) {
-          div.classList.add("formacion");
-        }
         div.textContent = r;
         div.onclick = () => toggleRamo(r, div);
         col.appendChild(div);
