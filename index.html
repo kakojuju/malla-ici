@@ -8,27 +8,42 @@
     font-family: Arial, sans-serif;
     padding: 20px;
   }
+
   h1 {
     text-align: center;
   }
+
   .malla {
     display: flex;
     gap: 10px;
     justify-content: flex-start;
     overflow-x: auto;
   }
+
   .semestre {
     display: flex;
     flex-direction: column;
     gap: 5px;
     min-width: 150px;
     word-wrap: break-word;
+    padding: 10px;
+    border-radius: 10px;
   }
+
+  .semestre:nth-child(odd) {
+    background-color: #f0f8ff; /* azul muy claro */
+  }
+
+  .semestre:nth-child(even) {
+    background-color: #f9f9f9; /* gris muy claro */
+  }
+
   .semestre-title {
     font-weight: bold;
     text-align: center;
     margin-bottom: 10px;
   }
+
   .ramo {
     padding: 5px;
     cursor: pointer;
@@ -38,21 +53,28 @@
     word-wrap: break-word;
     white-space: normal;
   }
+
   .bloqueado {
-    background-color: gray;
+    background-color: #c5c5c5;
     color: white;
   }
+
   .desbloqueado {
-    background-color: #a8dadc;
+    background-color: #b6e2d3;
   }
+
   .aprobado {
+    background-color: #d6eee6;
     text-decoration: line-through;
-    background-color: #a8dadc;
+  }
+
+  .formacion {
+    background-color: #a8d4f0 !important;
   }
 </style>
 </head>
 <body>
-<h1>Malla Ingeniería Civil Industrial</h1>
+<h1>Malla Interactiva Ingeniería Civil Industrial</h1>
 <div class="malla" id="malla"></div>
 
 <script>
@@ -149,6 +171,9 @@ semestres.forEach((ramosSem, i) => {
   ramosSem.forEach(r => {
     const div = document.createElement("div");
     div.className = `ramo ${estado[r]}`;
+    if (r.includes("Formación integral")) {
+      div.classList.add("formacion");
+    }
     div.textContent = r;
     div.onclick = () => toggleRamo(r, div);
     col.appendChild(div);
